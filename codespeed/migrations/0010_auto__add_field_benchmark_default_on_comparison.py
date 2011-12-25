@@ -10,9 +10,10 @@ class Migration(SchemaMigration):
         
         # Adding field 'Benchmark.default_on_comparison'
         db.add_column('codespeed_benchmark', 'default_on_comparison', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
-        for bench in orm.Benchmark.objects.all():
-            bench.default_on_comparison = bench.benchmark_type == 'C'
-            bench.save()
+        if not db.dry_run:
+            for bench in orm.Benchmark.objects.all():
+                bench.default_on_comparison = bench.benchmark_type == 'C'
+                bench.save()
 
 
     def backwards(self, orm):
